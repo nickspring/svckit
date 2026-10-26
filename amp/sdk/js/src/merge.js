@@ -6,7 +6,11 @@ function merge(full, diff, skipEnrichment) {
       delete full["_"+key+"Change"];
       continue;
     }
-    if (typeof d === 'object' && full[key] !== undefined && !Array.isArray(d)) {
+    if (typeof d === 'object' && !Array.isArray(d)) {
+      // a diff object stored as is keeps its nulls and is shared with handlers
+      if (typeof full[key] !== 'object' || full[key] === null) {
+        full[key] = {};
+      }
       let parent = full["_collection"];
       if (!!d["_isStruct"]){
         parent = full;
